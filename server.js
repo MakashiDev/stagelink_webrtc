@@ -4,6 +4,9 @@ const socketIo = require('socket.io');
 const path = require('path');
 const dotenv = require('dotenv');
 const os = require('os');
+const session = require('express-session');
+const bcrypt = require('bcryptjs');
+const flash = require('connect-flash');
 
 // Load environment variables
 dotenv.config();
@@ -13,13 +16,71 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 
-// Set static folder
+// Session configuration
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'stagelink-secret',
+  resave: false,
+  saveUninitialized: false,
+  cookie: { secure: false }
+}));
+
+// Flash messages middleware
+app.use(flash());
+
+// Body parser middleware
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
+// Set static folder for public assets
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Authentication middleware
+const isAuthenticated = (req, res, next) => {
+  if (req.session.isAuthenticated) {
+    return next();
+  }
+  res.redirect('/login');
+};
+
+// Routes
+app.get('/login', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'login.html'));
+});
+
+app.post('/login', (req, res) => {
+  const { password } = req.body;
+  const hostPassword = process.env.HOST_PASSWORD || '6969';
+
+  if (password === hostPassword) {
+    req.session.isAuthenticated = true;
+    res.redirect('/host');
+  } else {
+    // Instead of using flash messages, redirect with query parameter
+    res.redirect('/login?error=true');
+  }
+});
+
+app.get('/logout', (req, res) => {
+  req.session.destroy();
+  res.redirect('/login');
+});
+
+app.get('/host', isAuthenticated, (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'host.html'));
+});
+
+app.get('/viewer', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'viewer.html'));
+});
 
 // Serve the main page
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
+
+// API endpoint to check authentication status
+app.get('/api/auth/status', (req, res) => {
+  res.json({ isAuthenticated: req.session.isAuthenticated === true });});
 
 // Store current show settings
 let showSettings = {
