@@ -1,6 +1,6 @@
 # Stage Link
 
-Real-time stage monitoring system for theater crews.
+Real-time stage monitoring system for stage crews.
 
 ## Overview
 
@@ -29,7 +29,7 @@ Stage Link is a web-based application designed to provide real-time video monito
 
 ### Prerequisites
 
-- [Bun](https://bun.sh/) runtime installed
+- [Bun](https://bun.sh/) runtime installed or Node.js (We recommend Bun for its performance benefits)
 - Web camera for hosting
 
 ### Setup
@@ -45,18 +45,21 @@ cd stage-link
 
 ```bash
 bun install
+npm i
 ```
 
 3. Build the CSS (if needed)
 
 ```bash
-bun tailwindcss -i ./public/css/input.css -o ./public/css/output.css
+bunx tailwindcss -i ./public/css/input.css -o ./public/css/output.css
+npx tailwindcss -i./public/css/input.css -o./public/css/output.css
 ```
 
 4. Start the server
 
 ```bash
 bun start
+node server.js
 ```
 
 The application will be available at `http://localhost:3000` by default.
@@ -82,7 +85,7 @@ You can modify the following settings:
 
 - Host password in `host.html`
 - PeerJS server configuration in both `host.html` and `viewer.html`
-- Theme options in `js/theme.js`
+- Theme options in `css/input.css`
 
 ## Development
 
@@ -90,6 +93,7 @@ To run the application in development mode with automatic restarts:
 
 ```bash
 bun dev
+// idk that the node.js one is 😭
 ```
 
 ## License
@@ -98,4 +102,4 @@ MIT
 
 ## Author
 
-Created by Christian Furr
+Created by Christian Furr for Oquirrh Hills Middle School (2023-2025)

@@ -237,7 +237,9 @@
                     host: window.location.hostname,
                     port: 9000,
                     path: '/peerjs',
-                    debug: 2
+                    debug: 2,
+                    secure: window.location.protocol === 'https:',
+                    config: { 'iceServers': [{ 'urls': 'stun:stun.l.google.com:19302' }] }
                 });
         
                 peer.on('open', (id) => {

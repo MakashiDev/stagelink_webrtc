@@ -49,7 +49,7 @@ app.get('/login', (req, res) => {
 
 app.post('/login', (req, res) => {
   const { password } = req.body;
-  const hostPassword = process.env.HOST_PASSWORD || '6969';
+  const hostPassword = process.env.HOST_PASSWORD || 'stagelink123';
 
   if (password === hostPassword) {
     req.session.isAuthenticated = true;
@@ -113,6 +113,8 @@ io.on('connection', (socket) => {
     if (hostPeerId) {
       socket.emit('hostId', hostPeerId);
     }
+    // Request camera access regardless of connection type
+    socket.emit('requestCameraAccess');
   });
 
   // Handle show settings update
