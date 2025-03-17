@@ -98,7 +98,7 @@ bun dev
 
 ## License
 
-MIT
+idk yet
 
 ## Author
 
